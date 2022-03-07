@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{%block main_content%}
+    <h1> Hello {{message}} </h1>
+    <h3>
+        {% if request.user.user_type != 'HR' %}
+            No. of leaves left: {{request.user.leaves}}
+        {% endif %} 
+    </h3>
+<br>
+
+<table class="table">
+        <thead>
+            <tr>
+                <th colspan=6>{% if request.user.user_type != 'HR' %}YOUR{% else %}ALL {% endif %} REQUESTS</th>
+            </tr>
+        <tr>
+            <th>ID</th>
+            <th>Pending At</th>
+            <th>Reason</th>
+            <th>From</th>
+            <th>No. of Days</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for rea in reasons %}
+             <tr>
+                 <td>{{rea.id}}</td>
+                 {% if rea.status == 'Accepted' %}
+                 <td>-</td>
+                 {% else %}
+                 <td>{{rea.pendingAt}} ({{rea.pendingAt.user_type}})</td>
+                 {% endif %}
+                 <td>{{rea.reason}}</td>
+                 <td>{{rea.start_from}}</td>
+                 <td>{{rea.days}}</td>
+                 <td>{{rea.status}}</td>
+
+             </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+    <a href="{% if request.user.is_authenticated %}{% url 'logout' %} {% else %}{% url 'login'  %}{% endif %}">
+        <button>Log{% if request.user.is_authenticated %}out{% else %}in{% endif %}</button>
+    </a>
+
+    {% if request.user.user_type != 'HR' %}
+    <a href="{% if request.user.is_authenticated %} {% url 'employee' %}{% endif %}">
+        <button>Request</button>
+    </a>
+    {% endif %}
+
+    {% if request.user.user_type == "Team Lead" %}
+    <a href="{% url 'teamlead' %}">
+        <button>View Requests</button>
+    </a>
+    {% elif request.user.user_type == "Project Manager" %}
+    <a href="{% url 'projectmanager' %}">
+        <button>View Requests</button>
+    </a>
+    {% elif request.user.user_type == "HR" %}
+    <a href="{% url 'HR' %}">
+        <button>Manage Pending Requests</button>
+    </a>
+    {% endif %}
+{%endblock main_content%}

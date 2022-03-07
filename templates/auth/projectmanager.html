@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HR</title>
+</head>
+<body>
+    {% if reasons %}
+      <table class="table">
+        <thead>
+            <tr>
+                <th colspan=6>ALL REQUESTS</th>
+            </tr>
+        <tr>
+            <th>ID</th>
+            <th>Requested By</th>
+            <th>Pending At</th>
+            <th>Reason</th>
+            <th>Leave Date</th>
+            <th>No. of Days</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for rea in reasons %}
+             <tr>
+                 <td>{{rea.id}}</td>
+                 <td>{{rea.user}}</td>
+                 <td>{{rea.pendingAt}}</td>
+                 <td>{{rea.reason}}</td>
+                 <td>{{rea.start_from}}</td>
+                 <td>{{rea.days}}</td>
+
+                {% if rea.status == 'Pending' %}
+                <td>
+                    <a href="{% url 'accept' rea.id %}">
+                        <button >Accept</button>
+                    </a>
+                    <a href="{% url 'delete' rea.id %}" class="btn btn-danger">
+                        <button>Reject</button>
+                    </a>
+                 </td>
+                 {% else %}
+                 <td>
+                     {{rea.status}}
+                 </td>
+                {% endif %}
+
+             </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <h1>No pending requests currently!</h1>
+    {% endif %}
+    <a href="{% url 'home' %}"><button>Back</button></a>
+    
+</body>
+</html>
